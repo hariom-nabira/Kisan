@@ -1,0 +1,66 @@
+.header {
+    @apply bg-transparent transition-all duration-300 ease-out;
+}
+
+.header.show {
+    @apply bg-[#352015] shadow-lg;
+}
+
+.header.hide {
+    transform: translateY(-64px);
+}
+
+.header .nav-list .nav-list-ele {
+    @apply text-[#fdeed1] font-light cursor-pointer text-lg px-4 py-2;
+    font-size: 1.2rem;
+}
+
+.mbView {
+    @apply flex flex-col absolute top-16 left-0 bg-[#352015] w-full px-5 py-5 border-t border-opacity-10 transition-transform duration-300 ease-out;
+}
+
+.mbView-Ele {
+    @apply text-lg w-full px-5 py-4 bg-[#352015] flex flex-col items-start;
+}
+
+.top {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    @apply translate-y-0;
+}
+
+
+/* Mobile Menu Animations */
+.transform {
+    transition: transform 0.3s ease-in-out;
+}
+
+.translate-x-full {
+    transform: translateX(100%);
+}
+
+.translate-x-0 {
+    transform: translateX(0);
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+    .nav-list {
+        @apply hidden;
+    }
+
+    .mobileView {
+        @apply block;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .nav-list {
+        @apply flex;
+    }
+
+    .mobileView {
+        @apply hidden;
+    }
+}
