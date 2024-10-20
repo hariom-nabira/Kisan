@@ -63,8 +63,8 @@ const Register = () => {
         e.preventDefault();
         if(validateForm()) {
             try {
-                const response = await axios.post('/api/register', formData);
-                if(response.ok) {
+                const response = await api.post('/api/register', formData);
+                if(response.status===201) {
                     toast.success("Registration successful!");
                     setFormData({
                         firstName: '',
@@ -77,12 +77,13 @@ const Register = () => {
                         confirmPassword: ''
                     });
                     // navigate('/login');
-                } else {
-                    const errorData = await response.json();
-                    toast.error(errorData.msg || 'An error occurred. Please try again.');
                 }
             } catch(error) {
-                toast.error('Server Error. Please try again later.');
+                if (error.response && error.response.data && error.response.data.message) {
+                    toast.error(error.response.data.message);
+                } else {
+                    toast.error('Server Error. Please try again later.');
+                }
             }
         }
     };
