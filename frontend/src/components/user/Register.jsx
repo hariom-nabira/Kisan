@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import api from '../../utils/api';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -14,6 +15,8 @@ const Register = () => {
         password: '',
         confirmPassword: ''
     });
+
+    const navigate = useNavigate();
 
     const handleChange = useCallback((e) => {
         const { name, value } = e.target;
@@ -76,7 +79,7 @@ const Register = () => {
                         password: '',
                         confirmPassword: ''
                     });
-                    // navigate('/login');
+                    navigate('/login');
                 }
             } catch(error) {
                 if (error.response && error.response.data && error.response.data.message) {

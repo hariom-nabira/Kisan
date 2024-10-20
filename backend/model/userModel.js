@@ -1,6 +1,5 @@
 const { Schema, model } = require("mongoose");
 const bcrypt = require("bcrypt");
-const { createToken } = require("../utils/auth");
 
 const userSchema = new Schema({
     firstName: {
@@ -66,14 +65,13 @@ userSchema.pre("save", async function (next) {
 userSchema.statics.verifyPassword = async function(aadharNo, password) {
     const user = await this.findOne({aadharNo: aadharNo});
     if(!user) {
-        return { valid: false };
+        return null;
     }
     const valid = await bcrypt.compare(password, user.password);
     if(valid) {
-        const token = createToken(user);
-        return { valid: true, token };
+        return user;
     }
-    return { valid: false };
+    return null;
 }
 
 const USER = model("users", userSchema);

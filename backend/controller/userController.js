@@ -1,4 +1,5 @@
 const USER = require("../model/userModel");
+const { createRefreshToken, validateRefreshToken, createAccessToken } = require("../utils/auth");
 
 const userRegistration = async (req, res) => {
     console.log("DATA received: ", req.body);
@@ -40,22 +41,56 @@ const userRegistration = async (req, res) => {
     }
 }
 
-const userLogin = async(req, res) => {
+const userLogin = async (req, res) => {
     const { aadharNo, password } = req.body;
     try {
-        const { valid, token } = await USER.verifyPassword(aadharNo, password);
-        if (!valid) {
+        const user = await USER.verifyPassword(aadharNo, password);
+        if (!user) {
             return res.status(401).json({ message: "Invalid aadhar number or password." });
         }
-        return res.cookie("token", token, { httpOnly: true, secure: true }).status(200).json({ message: "Login successful!" });
+        const accessToken = createAccessToken(user);
+        const refreshToken = createRefreshToken(user);
+
+        return res.status(200).json({
+            message: "Login successful!",
+            accessToken,
+            refreshToken
+        });
     } catch (err) {
         console.error("Error during user login:", err);
         return res.status(500).json({ message: "Server error. Please try again later." });
     }
 }
 
-const userLogout = (req, res) => {
-    return res.clearCookie("token").status(200).json({ message: "Logout successful!" });
+const userLogout = () => {
+    setTokens({ accessToken: null, refreshToken: null });
+    sessionStorage.removeItem('accessToken');
+    sessionStorage.removeItem('refreshToken');
+
+    return res.status(200).json({ message: "Logout successful!" });
+};
+
+const refreshAccessToken = async (req, res) => {
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+        return res.status(401).json({ message: "Missing refresh token." });
+    }
+    try {
+        const decoded = validateRefreshToken(refreshToken);
+        if (!decoded) {
+            return res.status(401).json({ message: "Invalid refresh token." });
+        }
+        const newAccessToken = createAccessToken(user);
+        return res.status(200).json({
+            message: "Refresh token successful!",
+            accessToken: newAccessToken,
+        });
+    } catch (err) {
+        console.error("Error during refresh token:", err);
+        return res.status(500).json({
+            message: "Server error. Please try again later."
+        });
+    }
 }
 
-module.exports = { userRegistration, userLogin, userLogout };
+    module.exports = { userRegistration, userLogin, userLogout, refreshAccessToken };
