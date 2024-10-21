@@ -4,6 +4,9 @@ import Navbar from "./components/header/Navbar"
 import Register from "./components/user/Register"
 import Login from "./components/user/Login"
 import Home from "./pages/Home"
+import About from "./pages/About"
+import Contact from "./pages/Contact"
+import PageNotFound from "./pages/PageNotFound"
 
 function App() {
   const [tokens, setTokens] = useState({
@@ -27,10 +30,14 @@ function App() {
   return (
     <>
       <BrowserRouter>
+      <Navbar isAuthenticated={isAuthenticated} setTokens={setTokens} />
         <Routes>
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login setTokens={setTokens} />} />
           <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
+          <Route path="/about" element={isAuthenticated ? <About /> : <Navigate to="/login" />} />
+          <Route path="/contact" element={isAuthenticated ? <Contact /> : <Navigate to="/login" />} />
+          <Route path='*' element={<PageNotFound />} />
         </Routes>
       </BrowserRouter>
     </>
