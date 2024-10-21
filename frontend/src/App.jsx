@@ -29,7 +29,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login setTokens={setTokens} />} />
           <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
         </Routes>
       </BrowserRouter>

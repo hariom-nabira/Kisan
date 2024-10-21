@@ -2,54 +2,44 @@ import React, { useCallback, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import api from '../../utils/api';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
-const Login = ({setTokens}) => {
+const Login = ({ setTokens }) => {
   const [formData, setFormData] = useState({
     aadharNo: '',
     password: ''
   });
+  const navigate = useNavigate();
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   }, []);
 
-  const validateForm = () => {
-    const { aadharNo, password } = formData;
-    if (!aadharNo || !password) {
-      toast.error("Please fill in all required fields.");
-      return false;
-    }
-    if (aadharNo.length !== 12) {
-      toast.error("Aadhar number must be 12 digits long.");
-      return false;
-    }
-    return true;
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      try {
-        const response = await api.post('/api/login', formData);
-        if (response.status === 200) {
-          toast.success("Login successful!");
-          
-          sessionStorage.setItem('accessToken', response.data.accessToken);
-          sessionStorage.setItem('refreshToken', response.data.refreshToken);
-          
-          setTokens({
-            accessToken: response.data.accessToken,
-            refreshToken: response.data.refreshToken,
-          });
+    try {
+      const response = await api.post('/api/login', formData);
+      console.log("RESPONSE\n", response);
+      if (response.status === 200) {
+        console.log("Session Storage Setting Started");
+        sessionStorage.setItem('accessToken', response.data.accessToken);
+        sessionStorage.setItem('refreshToken', response.data.refreshToken);
 
-        }
-      } catch (error) {
-        if (error.response && error.response.data && error.response.data.message) {
-          toast.error(error.response.data.message);
-        } else {
-          toast.error('Server Error. Please try again later.');
-        }
+        // Update tokens in the parent App component
+        setTokens({
+          accessToken: response.data.accessToken,
+          refreshToken: response.data.refreshToken,
+        });
+
+        navigate("/");
+        toast.success("Login successful!");
+      }
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error('Server Error. Please try again later.');
       }
     }
   };
@@ -64,16 +54,26 @@ const Login = ({setTokens}) => {
           <div className="aadharNo">
             <label htmlFor='aadharNo'>
               Aadhar No
-              <input type="text" name="aadharNo" placeholder="Enter your Aadhar number"
-                value={formData.aadharNo} onChange={handleChange} />
+              <input
+                type="text"
+                name="aadharNo"
+                placeholder="Enter your Aadhar number"
+                value={formData.aadharNo}
+                onChange={handleChange}
+              />
             </label>
           </div>
 
           <div className="password">
             <label htmlFor='password'>
               Password
-              <input type="password" name="password" placeholder="Enter your password"
-                value={formData.password} onChange={handleChange} />
+              <input
+                type="password"
+                name="password"
+                placeholder="Enter your password"
+                value={formData.password}
+                onChange={handleChange}
+              />
             </label>
           </div>
 
@@ -84,7 +84,7 @@ const Login = ({setTokens}) => {
       </div>
       <ToastContainer />
     </section>
-  )
-}
+  );
+};
 
 export default Login;
