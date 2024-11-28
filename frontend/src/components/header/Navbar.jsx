@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FaBars, FaTimes, FaUser, FaLeaf, FaTractor, FaSeedling } from 'react-icons/fa';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { FaBars, FaTimes, FaLeaf } from "react-icons/fa";
 
 const Navbar = ({ isAuthenticated, setTokens }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,118 +14,49 @@ const Navbar = ({ isAuthenticated, setTokens }) => {
   };
 
   return (
-    <nav className="bg-green-800 text-green-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
-            <Link to="/" className="flex-shrink-0 flex items-center">
-              <FaLeaf className="h-8 w-8 text-green-300 mr-2" />
-              <span className="font-bold text-xl">Kisan</span>
-            </Link>
-            <div className="hidden md:block">
-              <div className="ml-10 flex items-baseline space-x-4">
-                <Link to="/" className="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700">
-                  <FaSeedling className="mr-1" />
-                  Home
-                </Link>
-                <Link to="/crops" className="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700">
-                  <FaTractor className="mr-1" />
-                  Crops
-                </Link>
-                <Link to="/services" className="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700">
-                  <FaLeaf className="mr-1" />
-                  Services
-                </Link>
-              </div>
-            </div>
-          </div>
-          <div className="hidden md:block">
-            <div className="ml-4 flex items-center md:ml-6">
-              {isAuthenticated ? (
-                <button
-                  onClick={handleLogout}
-                  className="px-3 py-2 rounded-md text-sm font-medium bg-red-600 hover:bg-red-700"
-                >
-                  Logout
-                </button>
-              ) : (
-                <div className="flex space-x-4">
-                  <Link
-                    to="/login"
-                    className="px-3 py-2 rounded-md text-sm font-medium bg-green-600 hover:bg-green-700"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="px-3 py-2 rounded-md text-sm font-medium bg-yellow-600 hover:bg-yellow-700"
-                  >
-                    Register
-                  </Link>
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="-mr-2 flex md:hidden">
-            <button
-              onClick={toggleMenu}
-              type="button"
-              className="inline-flex items-center justify-center p-2 rounded-md text-green-300 hover:text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-800 focus:ring-white"
-              aria-controls="mobile-menu"
-              aria-expanded="false"
-            >
-              <span className="sr-only">Open main menu</span>
-              {isOpen ? <FaTimes className="block h-6 w-6" /> : <FaBars className="block h-6 w-6" />}
-            </button>
-          </div>
-        </div>
-      </div>
+    <nav className="bg-white shadow-md">
+      <div className="container mx-auto px-4">
+        <div className="flex justify-between items-center py-4">
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-2">
+            <FaLeaf size={24} className="text-green-600" />
+            <span className="text-xl font-bold text-green-800">
+              FarmTech India
+            </span>
+          </Link>
 
-      {/* Mobile menu */}
-      <div className={`md:hidden ${isOpen ? 'block' : 'hidden'}`} id="mobile-menu">
-        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-          <Link
-            to="/"
-            className="flex items-center px-3 py-2 rounded-md text-base font-medium hover:bg-green-700"
-            onClick={toggleMenu}
-          >
-            <FaSeedling className="mr-2" />
-            Home
-          </Link>
-          <Link
-            to="/crops"
-            className="flex items-center px-3 py-2 rounded-md text-base font-medium hover:bg-green-700"
-            onClick={toggleMenu}
-          >
-            <FaTractor className="mr-2" />
-            Crops
-          </Link>
-          <Link
-            to="/services"
-            className="flex items-center px-3 py-2 rounded-md text-base font-medium hover:bg-green-700"
-            onClick={toggleMenu}
-          >
-            <FaLeaf className="mr-2" />
-            Services
-          </Link>
-        </div>
-        <div className="pt-4 pb-3 border-t border-green-700">
-          <div className="flex items-center px-5">
-            <FaUser className="h-6 w-6 rounded-full text-green-300" />
-            <div className="ml-3">
-              <div className="text-base font-medium leading-none">
-                {isAuthenticated ? 'Farmer Name' : 'Guest'}
-              </div>
-            </div>
-          </div>
-          <div className="mt-3 px-2 space-y-1">
+          {/* Desktop Menu */}
+          <div className="hidden md:flex space-x-4 items-center">
+            <Link
+              to="/services"
+              className="text-green-700 hover:text-green-500 transition duration-300"
+            >
+              Services
+            </Link>
+            <Link
+              to="/predict/crop"
+              className="block text-green-700 hover:text-green-500 transition duration-300"
+              onClick={toggleMenu}
+            >
+              Crop Prediction
+            </Link>
+            <Link
+              to="/predict/fertilizer"
+              className="block text-green-700 hover:text-green-500 transition duration-300"
+              onClick={toggleMenu}
+            >
+              Fertilizer Prediction
+            </Link>
+            <Link
+              to="/crops"
+              className="text-green-700 hover:text-green-500 transition duration-300"
+            >
+              Crops
+            </Link>
             {isAuthenticated ? (
               <button
-                onClick={() => {
-                  handleLogout();
-                  toggleMenu();
-                }}
-                className="block w-full text-left px-3 py-2 rounded-md text-base font-medium bg-red-600 hover:bg-red-700"
+                onClick={handleLogout}
+                className="px-4 py-2 bg-red-600 text-white rounded-full hover:bg-red-500 transition duration-300"
               >
                 Logout
               </button>
@@ -133,14 +64,84 @@ const Navbar = ({ isAuthenticated, setTokens }) => {
               <>
                 <Link
                   to="/login"
-                  className="block px-3 py-2 rounded-md text-base font-medium bg-green-600 hover:bg-green-700"
+                  className="text-green-700 hover:text-green-500 transition duration-300"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-500 transition duration-300"
+                >
+                  Register
+                </Link>
+              </>
+            )}
+          </div>
+
+          {/* Mobile Menu Toggle */}
+          <div className="md:hidden">
+            <button
+              onClick={toggleMenu}
+              className="text-green-700 hover:text-green-500"
+            >
+              {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {isOpen && (
+          <div className="md:hidden py-4 space-y-2">
+            <Link
+              to="/services"
+              className="block text-green-700 hover:text-green-500 transition duration-300"
+              onClick={toggleMenu}
+            >
+              Services
+            </Link>
+            <Link
+              to="/predict/crop"
+              className="block text-green-700 hover:text-green-500 transition duration-300"
+              onClick={toggleMenu}
+            >
+              Crop Prediction
+            </Link>
+            <Link
+              to="/predict/fertilizer"
+              className="block text-green-700 hover:text-green-500 transition duration-300"
+              onClick={toggleMenu}
+            >
+              Fertilizer Prediction
+            </Link>
+            <Link
+              to="/crops"
+              className="block text-green-700 hover:text-green-500 transition duration-300"
+              onClick={toggleMenu}
+            >
+              Crops
+            </Link>
+            {isAuthenticated ? (
+              <button
+                onClick={() => {
+                  handleLogout();
+                  toggleMenu();
+                }}
+                className="block w-full text-left text-red-600 hover:text-red-500 transition duration-300"
+              >
+                Logout
+              </button>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="block text-green-700 hover:text-green-500 transition duration-300"
                   onClick={toggleMenu}
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="block px-3 py-2 rounded-md text-base font-medium bg-yellow-600 hover:bg-yellow-700"
+                  className="block bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-500 transition duration-300"
                   onClick={toggleMenu}
                 >
                   Register
@@ -148,7 +149,7 @@ const Navbar = ({ isAuthenticated, setTokens }) => {
               </>
             )}
           </div>
-        </div>
+        )}
       </div>
     </nav>
   );
