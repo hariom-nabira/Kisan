@@ -8,7 +8,6 @@ import PageNotFound from "./pages/PageNotFound";
 import Footer from "./components/footer/Footer";
 import CropPredictor from "./components/predict/crop/CropPredictor";
 import FertilizerPredictor from "./components/predict/fertilizer/FertilizerPredict";
-import IdealCrop from "./components/predict/idealCrop/IdealCrop";
 import CropDataVisualization from "./components/cropAnalytics/CropDataVisualization";
 import CropConditions from "./components/cropConditions/cropConditions";
 
@@ -57,10 +56,6 @@ function App() {
                 <Navigate to="/login" />
               )
             }
-          />
-          <Route
-            path="/predict/idealCrop"
-            element={isAuthenticated ? <IdealCrop /> : <Navigate to="/login" />}
           />
           <Route
             path="/crop-analytics"
