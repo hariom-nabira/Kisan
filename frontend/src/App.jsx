@@ -4,12 +4,11 @@ import Navbar from "./components/header/Navbar";
 import Register from "./components/user/Register";
 import Login from "./components/user/Login";
 import Home from "./pages/Home";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
 import PageNotFound from "./pages/PageNotFound";
 import Footer from "./components/footer/Footer";
 import CropPredictor from "./components/predict/crop/CropPredictor";
 import FertilizerPredictor from "./components/predict/fertilizer/FertilizerPredict";
+import IdealCrop from "./components/predict/idealCrop/IdealCrop";
 
 function App() {
   const [tokens, setTokens] = useState({
@@ -39,15 +38,7 @@ function App() {
           <Route path="/login" element={<Login setTokens={setTokens} />} />
           <Route
             path="/"
-            element={isAuthenticated ? <Home /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/about"
-            element={isAuthenticated ? <About /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/contact"
-            element={isAuthenticated ? <Contact /> : <Navigate to="/login" />}
+            element={ <Home isAuthenticated={isAuthenticated} />}
           />
           <Route
             path="/predict/crop"
@@ -60,6 +51,16 @@ function App() {
             element={
               isAuthenticated ? (
                 <FertilizerPredictor />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/predict/idealCrop"
+            element={
+              isAuthenticated ? (
+                <IdealCrop />
               ) : (
                 <Navigate to="/login" />
               )

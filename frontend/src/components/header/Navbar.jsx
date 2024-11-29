@@ -21,17 +21,17 @@ const Navbar = ({ isAuthenticated, setTokens }) => {
           <Link to="/" className="flex items-center space-x-2">
             <FaLeaf size={24} className="text-green-600" />
             <span className="text-xl font-bold text-green-800">
-              FarmTech India
+              Kisan
             </span>
           </Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-4 items-center">
             <Link
-              to="/services"
+              to="/"
               className="text-green-700 hover:text-green-500 transition duration-300"
             >
-              Services
+              Home
             </Link>
             <Link
               to="/predict/crop"
@@ -48,8 +48,9 @@ const Navbar = ({ isAuthenticated, setTokens }) => {
               Fertilizer Prediction
             </Link>
             <Link
-              to="/crops"
+              to="/predict/idealCrop"
               className="text-green-700 hover:text-green-500 transition duration-300"
+              onClick={toggleMenu}
             >
               Crops
             </Link>

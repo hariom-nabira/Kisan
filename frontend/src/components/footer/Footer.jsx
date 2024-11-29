@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
-            <h3 className="text-xl font-semibold">FarmTech India</h3>
+            <h3 className="text-xl font-semibold">Kisan</h3>
             <p className="text-sm mt-2">
               Empowering Indian farmers with technology
             </p>
@@ -34,7 +34,7 @@ export default function Footer() {
         </div>
         <div className="border-t border-green-700 mt-8 pt-8 text-center text-sm">
           <p>
-            &copy; {new Date().getFullYear()} FarmTech India. All rights
+            &copy; {new Date().getFullYear()} Kisan. All rights
             reserved.
           </p>
         </div>
