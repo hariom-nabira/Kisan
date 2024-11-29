@@ -112,5 +112,68 @@ def predict():
     
     return jsonify({"predictions": results})
 
+
+
+df = pd.read_csv('./dataset/crop_recommendation.csv')
+num_col = ['N', 'P', 'K', 'temperature', 'humidity', 'ph', 'rainfall']
+
+locations_data = [
+    {'name': 'Nagpur', 'humidity': 85, 'rainfall': 150},
+    {'name': 'Pune', 'humidity': 60, 'rainfall': 100},
+    {'name': 'Hyderabad', 'humidity': 90, 'rainfall': 120},
+    {'name': 'Mumbai', 'humidity': 95, 'rainfall': 200},
+    {'name': 'Delhi', 'humidity': 70, 'rainfall': 80},
+    {'name': 'Bangalore', 'humidity': 65, 'rainfall': 130},
+    {'name': 'Chennai', 'humidity': 80, 'rainfall': 160},
+    {'name': 'Kolkata', 'humidity': 78, 'rainfall': 170},
+    {'name': 'Ahmedabad', 'humidity': 55, 'rainfall': 90},
+    {'name': 'Jaipur', 'humidity': 45, 'rainfall': 70},
+    {'name': 'Lucknow', 'humidity': 65, 'rainfall': 110},
+    {'name': 'Bhopal', 'humidity': 58, 'rainfall': 95},
+    {'name': 'Indore', 'humidity': 52, 'rainfall': 85},
+    {'name': 'Surat', 'humidity': 72, 'rainfall': 120},
+    {'name': 'Visakhapatnam', 'humidity': 75, 'rainfall': 140},
+    {'name': 'Patna', 'humidity': 68, 'rainfall': 105},
+    {'name': 'Vadodara', 'humidity': 62, 'rainfall': 95},
+    {'name': 'Guwahati', 'humidity': 78, 'rainfall': 180},
+    {'name': 'Coimbatore', 'humidity': 70, 'rainfall': 95},
+    {'name': 'Kochi', 'humidity': 85, 'rainfall': 250},
+    {'name': 'Thiruvananthapuram', 'humidity': 80, 'rainfall': 180},
+    {'name': 'Bhubaneswar', 'humidity': 75, 'rainfall': 150},
+    {'name': 'Raipur', 'humidity': 62, 'rainfall': 130},
+    {'name': 'Chandigarh', 'humidity': 55, 'rainfall': 110},
+    {'name': 'Ranchi', 'humidity': 65, 'rainfall': 140},
+    {'name': 'Agra', 'humidity': 58, 'rainfall': 85},
+    {'name': 'Varanasi', 'humidity': 70, 'rainfall': 100},
+    {'name': 'Amritsar', 'humidity': 60, 'rainfall': 70},
+    {'name': 'Jodhpur', 'humidity': 40, 'rainfall': 35},
+    {'name': 'Dehradun', 'humidity': 72, 'rainfall': 200},
+]
+    
+@app.route('/api/crop-info/<crop_name>', methods=['GET'])
+def get_crop_info(crop_name):
+    crop_info = df[df['label'].str.lower() == crop_name.lower()]
+    
+    if not crop_info.empty:
+        parameters = crop_info[num_col].mean().to_dict()
+        humidity_range = [parameters['humidity'] - 10, parameters['humidity'] + 10]
+        rainfall_range = [parameters['rainfall'] - 50, parameters['rainfall'] + 50]
+        
+        suitable_locations = [
+            location['name']
+            for location in locations_data
+            if humidity_range[0] <= location['humidity'] <= humidity_range[1] and
+               rainfall_range[0] <= location['rainfall'] <= rainfall_range[1]
+        ]
+        
+        return jsonify({
+            'parameters': parameters,
+            'suitable_locations': suitable_locations
+        })
+    
+    return jsonify({'error': 'Crop not found'}), 404
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)

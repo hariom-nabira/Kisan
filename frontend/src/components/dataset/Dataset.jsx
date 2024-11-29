@@ -18,9 +18,11 @@ export default function Datasets() {
               across India. This comprehensive dataset is invaluable for
               research and agricultural planning.
             </p>
-            <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-300">
-              Learn More
-            </button>
+            <a href="https://kisann.streamlit.app/">
+              <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-300">
+                Learn More
+              </button>
+            </a>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md">
             <Sprout className="w-12 h-12 text-green-600 mb-4" />
@@ -32,9 +34,11 @@ export default function Datasets() {
               This data is crucial for understanding upcoming agricultural
               patterns and market demands.
             </p>
-            <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-300">
-              Learn More
-            </button>
+            <a href="https://kisann.streamlit.app/">
+              <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-300">
+                Learn More
+              </button>
+            </a>
           </div>
         </div>
       </div>

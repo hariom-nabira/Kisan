@@ -1,5 +1,11 @@
-import React, { useState } from "react";
-import { FlaskConical, Leaf, Droplet } from "lucide-react"; // Import icons from Lucide
+import React, { useState, useEffect } from "react";
+import {
+  FlaskConical,
+  Leaf,
+  Droplet,
+  ThermometerSun,
+  RefreshCw,
+} from "lucide-react";
 
 const FertilizerPrediction = () => {
   const [inputData, setInputData] = useState({
@@ -15,6 +21,65 @@ const FertilizerPrediction = () => {
 
   const [prediction, setPrediction] = useState(null);
   const [error, setError] = useState(null);
+  const [weatherError, setWeatherError] = useState(null);
+  const [isLoadingWeather, setIsLoadingWeather] = useState(false);
+
+  const fetchWeatherData = async (latitude, longitude) => {
+    const url = `https://open-weather13.p.rapidapi.com/city/latlon/${latitude}/${longitude}`;
+    const options = {
+      method: "GET",
+      headers: {
+        "x-rapidapi-key": "6b491523f1mshb9783c4d5fa0ec8p1f4b3fjsn4f334d6c7ff5",
+        "x-rapidapi-host": "open-weather13.p.rapidapi.com",
+      },
+    };
+
+    try {
+      const response = await fetch(url, options);
+      const data = await response.json();
+
+      // Update temperature and humidity
+      setInputData((prev) => ({
+        ...prev,
+        Temparature: Math.round(data.main.temp - 273.15), // Convert Kelvin to Celsius
+        Humidity: data.main.humidity,
+      }));
+
+      setWeatherError(null);
+    } catch (error) {
+      setWeatherError(
+        "Failed to fetch weather data. Please enter values manually."
+      );
+    }
+    setIsLoadingWeather(false);
+  };
+
+  const getLocation = () => {
+    setIsLoadingWeather(true);
+    setWeatherError(null);
+
+    if (!navigator.geolocation) {
+      setWeatherError("Geolocation is not supported by your browser");
+      setIsLoadingWeather(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        fetchWeatherData(position.coords.latitude, position.coords.longitude);
+      },
+      () => {
+        setWeatherError(
+          "Unable to retrieve your location. Please enter values manually."
+        );
+        setIsLoadingWeather(false);
+      }
+    );
+  };
+
+  useEffect(() => {
+    getLocation();
+  }, []);
 
   const handleChange = (e) => {
     setInputData({ ...inputData, [e.target.name]: e.target.value });
@@ -57,6 +122,28 @@ const FertilizerPrediction = () => {
           Fertilizer Prediction
         </h2>
         <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
+          {weatherError && (
+            <div className="mb-4 p-4 bg-yellow-50 text-yellow-700 rounded-lg">
+              {weatherError}
+            </div>
+          )}
+
+          <div className="mb-6 flex items-center justify-between">
+            <button
+              type="button"
+              onClick={getLocation}
+              disabled={isLoadingWeather}
+              className="flex items-center bg-green-600 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-green-500 transition duration-300 transform hover:scale-105"
+            >
+              {isLoadingWeather ? (
+                <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
+              ) : (
+                <ThermometerSun className="w-5 h-5 mr-2" />
+              )}
+              {isLoadingWeather ? "Fetching Weather..." : "Update Weather Data"}
+            </button>
+          </div>
+
           <form
             onSubmit={handleSubmit}
             className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"

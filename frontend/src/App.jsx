@@ -9,6 +9,8 @@ import Footer from "./components/footer/Footer";
 import CropPredictor from "./components/predict/crop/CropPredictor";
 import FertilizerPredictor from "./components/predict/fertilizer/FertilizerPredict";
 import IdealCrop from "./components/predict/idealCrop/IdealCrop";
+import CropDataVisualization from "./components/cropAnalytics/CropDataVisualization";
+import CropConditions from "./components/cropConditions/cropConditions";
 
 function App() {
   const [tokens, setTokens] = useState({
@@ -38,7 +40,7 @@ function App() {
           <Route path="/login" element={<Login setTokens={setTokens} />} />
           <Route
             path="/"
-            element={ <Home isAuthenticated={isAuthenticated} />}
+            element={<Home isAuthenticated={isAuthenticated} />}
           />
           <Route
             path="/predict/crop"
@@ -58,14 +60,25 @@ function App() {
           />
           <Route
             path="/predict/idealCrop"
+            element={isAuthenticated ? <IdealCrop /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/crop-analytics"
             element={
               isAuthenticated ? (
-                <IdealCrop />
+                <CropDataVisualization />
               ) : (
                 <Navigate to="/login" />
               )
             }
           />
+          <Route
+            path="/crop-conditions"
+            element={
+              isAuthenticated ? <CropConditions /> : <Navigate to="/login" />
+            }
+          />
+
           <Route path="*" element={<PageNotFound />} />
         </Routes>
         <Footer />
