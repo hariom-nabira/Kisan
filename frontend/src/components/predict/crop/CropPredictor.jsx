@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { predictCrops } from "./Api";
+import { FaLeaf as Plant } from "react-icons/fa";
+import { BiCoinStack as Coins } from "react-icons/bi";
 
 const CropPredictor = () => {
   const [inputs, setInputs] = useState({
-    Nitrogen: 89,
-    Phosporous: 47,
-    Potassium: 38,
-    temperature: 25.57974371,
-    humidity: 72.00274423,
-    ph: 6.002985292000001,
-    rainfall: 151.9355362,
+    N: 89,
+    P: 47,
+    K: 38,
+    temperature: 25.57,
+    humidity: 72.0,
+    ph: 6.0,
+    rainfall: 151.9,
   });
   const [predictions, setPredictions] = useState([]);
   const [error, setError] = useState("");
@@ -19,124 +21,136 @@ const CropPredictor = () => {
     setInputs({ ...inputs, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
       setIsLoading(true);
       setError("");
       setPredictions([]);
 
-      // Validate inputs
-      const isEmptyField = Object.values(inputs).some(
-        (value) => value === "" || value === null
+      // Validate and process inputs
+      const processedInputs = Object.entries(inputs).reduce(
+        (acc, [key, value]) => {
+          const floatValue = parseFloat(value);
+          if (isNaN(floatValue)) {
+            throw new Error(`Invalid value for ${key}`);
+          }
+          acc[key] = floatValue;
+          return acc;
+        },
+        {}
       );
-      if (isEmptyField) {
-        setError("All fields are required. Please fill in all values.");
-        return;
-      }
-
-      // Convert inputs to float and validate
-      const processedInputs = {};
-      for (const [key, value] of Object.entries(inputs)) {
-        const floatValue = parseFloat(value);
-        if (isNaN(floatValue)) {
-          setError(`Invalid value for ${key}. Please enter a valid number.`);
-          return;
-        }
-        processedInputs[key] = floatValue;
-      }
-
-      console.log("Sending data:", processedInputs); // Debug log
 
       const result = await predictCrops(processedInputs);
 
-      console.log("Received result:", result); // Debug log
-
       if (!result || !result.predictions) {
-        throw new Error("Invalid response format from server");
+        throw new Error("Invalid response from server.");
       }
-
       setPredictions(result.predictions);
-    } catch (error) {
-      console.error("Error during prediction:", error);
-      setError(
-        error.message || "Error predicting crops. Please try again later."
-      );
+    } catch (err) {
+      setError(err.message || "An error occurred during prediction.");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-lg bg-white shadow-md rounded-lg p-8">
-        <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          Crop Predictor
-        </h1>
-
-        {error && (
-          <div className="bg-red-50 text-red-500 p-3 rounded-lg mb-4">
-            {error}
-          </div>
-        )}
-
-        <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-          {Object.keys(inputs).map((key) => (
-            <div key={key}>
-              <label className="block text-gray-700 font-medium mb-1">
-                {key.toUpperCase()}
-              </label>
-              <input
-                type="number"
-                name={key}
-                value={inputs[key]}
-                onChange={handleChange}
-                placeholder={`Enter ${key}`}
-                className="w-full border rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring focus:ring-blue-300"
-              />
+    <section className="py-20 bg-green-50">
+      <div className="container mx-auto px-4">
+        <h2 className="text-3xl font-bold text-center text-green-800 mb-12">
+          Crop Prediction
+        </h2>
+        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
+          {error && (
+            <div className="bg-red-50 text-red-500 p-3 rounded-lg mb-4">
+              {error}
             </div>
-          ))}
-        </form>
+          )}
+          <form
+            onSubmit={handleSubmit}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"
+          >
+            {Object.keys(inputs).map((key) => (
+              <div key={key}>
+                <label
+                  htmlFor={key}
+                  className="block text-sm font-medium text-green-700 mb-1"
+                >
+                  {key.toUpperCase()}
+                </label>
+                <input
+                  type="number"
+                  id={key}
+                  name={key}
+                  value={inputs[key]}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-3 py-2 border border-green-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+            ))}
+            <div className="md:col-span-2">
+              <button
+                type="submit"
+                className={`w-full ${
+                  isLoading ? "bg-green-300" : "bg-green-600 hover:bg-green-500"
+                } text-white px-6 py-3 rounded-full text-lg font-semibold transition duration-300 transform ${
+                  !isLoading && "hover:scale-105"
+                }`}
+                disabled={isLoading}
+              >
+                {isLoading ? "Predicting..." : "Predict Crops"}
+              </button>
+            </div>
+          </form>
 
-        <button
-          onClick={handleSubmit}
-          disabled={isLoading}
-          className={`w-full ${
-            isLoading ? "bg-blue-300" : "bg-blue-500 hover:bg-blue-600"
-          } text-white font-semibold py-2 mt-4 rounded-lg transform transition duration-200 ${
-            !isLoading && "hover:scale-105"
-          }`}
-        >
-          {isLoading ? "Predicting..." : "Predict"}
-        </button>
-
-        {predictions.length > 0 && (
-          <div className="mt-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-2">
-              Predicted Crops
-            </h2>
-            <ul className="space-y-2">
-              {predictions.map((prediction, idx) => (
-                <li key={idx} className="bg-gray-50 p-3 rounded-lg">
-                  <div className="font-semibold">{prediction.crop}</div>
-                  <div className="text-sm text-gray-600">
-                    MSP:{" "}
-                    {typeof prediction.msp === "number"
-                      ? `₹${prediction.msp.toLocaleString()}/quintal`
-                      : prediction.msp}
+          {predictions.length > 0 && (
+            <div>
+              <h3 className="text-2xl font-semibold text-green-800 mb-4">
+                Top 3 Predicted Crops
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {predictions.map((crop, index) => (
+                  <div
+                    key={index}
+                    className="bg-green-100 p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
+                  >
+                    <div className="flex items-center mb-4">
+                      <Plant className="w-8 h-8 text-green-600 mr-2" />
+                      <h4 className="text-xl font-semibold text-green-800">
+                        {crop.crop}
+                      </h4>
+                    </div>
+                    <div className="flex items-center mb-2">
+                      <Coins className="w-5 h-5 text-green-600 mr-2" />
+                      <p className="text-green-700">
+                        {crop.msp !== "MSP not available"
+                          ? `₹${crop.msp}/quintal`
+                          : crop.msp}
+                      </p>
+                    </div>
+                    <div className="mt-4">
+                      <h5 className="text-lg font-semibold text-green-800 mb-2">
+                        Related Schemes:
+                      </h5>
+                      <ul className="list-disc list-inside text-green-700">
+                        {crop.schemes.length > 0 ? (
+                          crop.schemes.map((scheme, idx) => (
+                            <li key={idx}>{scheme}</li>
+                          ))
+                        ) : (
+                          <li>No schemes available</li>
+                        )}
+                      </ul>
+                    </div>
                   </div>
-                  <div className="text-sm text-gray-600">
-                    Schemes:{" "}
-                    {prediction.schemes.length > 0
-                      ? prediction.schemes.join(", ")
-                      : "No schemes available"}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 
