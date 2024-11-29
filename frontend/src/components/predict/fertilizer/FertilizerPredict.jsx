@@ -91,7 +91,7 @@ const FertilizerPrediction = () => {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:5000/fertilizer_predict", {
+      const response = await fetch("https://mini-project-grp9-ml.onrender.com/fertilizer_predict", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

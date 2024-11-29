@@ -9,7 +9,7 @@ const CropRecommendation = () => {
   const fetchCropInfo = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/crop-info/${cropName}`
+        `https://mini-project-grp9-ml.onrender.com/api/crop-info/${cropName}`
       );
       const data = await response.json();
 
