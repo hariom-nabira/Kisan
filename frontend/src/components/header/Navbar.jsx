@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaBars, FaTimes, FaLeaf } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = ({ isAuthenticated, setTokens }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     setTokens({ accessToken: null, refreshToken: null });
+    navigate("/");
   };
 
   const toggleMenu = () => {
