@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+//this is api.js
 const api = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
     timeout: 60000,
@@ -68,7 +68,6 @@ api.interceptors.response.use(
             }
         }
 
-        // If it's not a 401 error or refreshing failed, log the error
         console.error("API Response Error:", error.response ? error.response.data : error);
         return Promise.reject(error);
     }
